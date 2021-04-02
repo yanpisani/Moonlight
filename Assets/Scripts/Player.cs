@@ -9,6 +9,7 @@ public struct WeaponStats {
     //public float recoilMaxHeight;
     public float recoilStrengthPerShot;
     public bool fullAuto;
+    public float spread;
     //timings
     public float shotDelay; //time added to shotTimer each time we shoot
     public float lastShot; //when the previous shot occured
@@ -21,6 +22,7 @@ public struct WeaponStats {
     public int maxAmmo;
     public int maxReserve;
     //damage
+    public int multiShot;
     public int damageHead;
     public int damageBody;
     public int damageLeg;
@@ -111,27 +113,27 @@ public class Player : MonoBehaviour {
             Application.targetFrameRate = 10;
         //InputSystem.pollingFrequency = 300;
 
-        //weapon smg
-        //weapon[0].shotDelay = 0.075f; //ak
-        weapon[0].shotDelay = 0.1101f; //sg
-        //weapon[0].shotDelay = 0.2f;
+        //weapon shotgun
+        weapon[0].shotDelay = 0.2f;
         weapon[0].lastShot = -20f;
         //weapon[0].recoilMaxHeight = -6f;
         weapon[0].recoilStrengthPerShot = 0.0625f;
-        weapon[0].fullAuto = true;
+        weapon[0].fullAuto = false;
+        weapon[0].spread = 2f;
 
         weapon[0].equipTime = 0.7f;
         weapon[0].reloadTime = 2.25f;
         weapon[0].magLoadTime = 1.6f;
 
-        weapon[0].ammo = 30;
+        weapon[0].ammo = 2;
         weapon[0].reserve = 9999;
-        weapon[0].maxAmmo = 30;
-        weapon[0].maxReserve = 90;
+        weapon[0].maxAmmo = 2;
+        weapon[0].maxReserve = 36;
 
-        weapon[0].damageHead = 75;
-        weapon[0].damageBody = 25;
-        weapon[0].damageLeg = 20;
+        weapon[0].multiShot = 12;
+        weapon[0].damageHead = 9;
+        weapon[0].damageBody = 3;
+        weapon[0].damageLeg = 2;
 
         //weapon pistol
         weapon[1].shotDelay = 0.2f;
@@ -139,6 +141,7 @@ public class Player : MonoBehaviour {
         //weapon[1].recoilMaxHeight = -2f;
         weapon[1].recoilStrengthPerShot = 0.25f;
         weapon[1].fullAuto = false;
+        weapon[1].spread = 0f;
 
         weapon[1].equipTime = 0.45f;
         weapon[1].reloadTime = 1.5f;
@@ -149,6 +152,7 @@ public class Player : MonoBehaviour {
         weapon[1].maxAmmo = 7;
         weapon[1].maxReserve = 21;
 
+        weapon[1].multiShot = 1;
         weapon[1].damageHead = 100;
         weapon[1].damageBody = 35;
         weapon[1].damageLeg = 25;
@@ -394,24 +398,31 @@ public class Player : MonoBehaviour {
             Vector3 finalAim = aimPivot.forward;
             finalAim = Quaternion.AngleAxis(recoil.eulerAngles.x, aimPivot.right) * finalAim;
             finalAim = Quaternion.AngleAxis(recoil.eulerAngles.y, aimPivot.up) * finalAim;
-            bool hit = Physics.Raycast(aimPivot.position, finalAim, out hitInfo);
-            Vector3 hitLocation;
-            if (hit) { //hit something
-                if (hitInfo.collider.gameObject.layer == 9) { //hit an enemy
-                    Enemy e = hitInfo.collider.GetComponentInParent<Enemy>();
-                    if (hitInfo.collider.tag == "BodyHitbox") {
-                        e.Hit(weapon[wIndex].damageBody);
-                    } else if (hitInfo.collider.tag == "HeadHitbox") {
-                        e.Hit(weapon[wIndex].damageHead);
-                    } else {
-                        e.Hit(weapon[wIndex].damageLeg);
+            int n = weapon[wIndex].multiShot;
+            while (n > 0) {
+                --n;
+                Vector3 tragectory = finalAim;
+                tragectory = Quaternion.AngleAxis(Random.Range(weapon[wIndex].spread*-1, weapon[wIndex].spread), aimPivot.right) * tragectory;
+                tragectory = Quaternion.AngleAxis(Random.Range(weapon[wIndex].spread*-1, weapon[wIndex].spread), aimPivot.up) * tragectory;
+                bool hit = Physics.Raycast(aimPivot.position, tragectory, out hitInfo);
+                Vector3 hitLocation;
+                if (hit) { //hit something
+                    if (hitInfo.collider.gameObject.layer == 9) { //hit an enemy
+                        Enemy e = hitInfo.collider.GetComponentInParent<Enemy>();
+                        if (hitInfo.collider.tag == "BodyHitbox") {
+                            e.Hit(weapon[wIndex].damageBody);
+                        } else if (hitInfo.collider.tag == "HeadHitbox") {
+                            e.Hit(weapon[wIndex].damageHead);
+                        } else {
+                            e.Hit(weapon[wIndex].damageLeg);
+                        }
                     }
+                    hitLocation = hitInfo.point;
+                } else { //missed all
+                    hitLocation = aimPivot.position + (tragectory * 50000f);
                 }
-                hitLocation = hitInfo.point;
-            } else { //missed all
-                hitLocation = aimPivot.position + (finalAim * 50000f);
+                SetShotLineHit(hitLocation);
             }
-            SetShotLineHit(hitLocation);
             if (wIndex == 0) {
                 smgSound.Play();
             } else {
