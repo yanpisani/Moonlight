@@ -12,7 +12,7 @@ public enum EnemyState {
     Flee
 }
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour, IDamagable {
 
     DangerGrid dangerGrid;
     Player player;
@@ -300,8 +300,8 @@ public class Enemy : MonoBehaviour {
     }
 
 
-    public void Hit(int damage) {
-        health -= damage;
+    public void Damage(int n) {
+        health -= n;
         if (health <= 0) {
             gameObject.SetActive(false);
             Respawn();

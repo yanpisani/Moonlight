@@ -407,14 +407,14 @@ public class Player : MonoBehaviour {
                 bool hit = Physics.Raycast(aimPivot.position, tragectory, out hitInfo);
                 Vector3 hitLocation;
                 if (hit) { //hit something
-                    if (hitInfo.collider.gameObject.layer == 9) { //hit an enemy
-                        Enemy e = hitInfo.collider.GetComponentInParent<Enemy>();
-                        if (hitInfo.collider.tag == "BodyHitbox") {
-                            e.Hit(weapon[wIndex].damageBody);
-                        } else if (hitInfo.collider.tag == "HeadHitbox") {
-                            e.Hit(weapon[wIndex].damageHead);
+                    IDamagable e = hitInfo.collider.GetComponentInParent<IDamagable>();
+                    if (e != null) { //hit something that can take damage
+                        if (hitInfo.collider.tag == "HeadHitbox") {
+                            e.Damage(weapon[wIndex].damageHead);
+                        } else if (hitInfo.collider.tag == "LegHitbox") {
+                            e.Damage(weapon[wIndex].damageLeg);
                         } else {
-                            e.Hit(weapon[wIndex].damageLeg);
+                            e.Damage(weapon[wIndex].damageBody);
                         }
                     }
                     hitLocation = hitInfo.point;
