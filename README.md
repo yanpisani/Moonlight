@@ -3,5 +3,5 @@ Moonlight: Unity Horror Game
 
 Programmers - IndigoRaccoon, Rissy  
 Sound Producer - Rissy  
-Modelling - Fellshaw  
+3D Modeller - Fellshaw  
 Creative Director, Level Designer - Zebra 
