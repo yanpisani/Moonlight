@@ -86,14 +86,14 @@ public class RigidBehavior : MonoBehaviour {
         return !Physics.Linecast(transform.position, player.transform.position, out hitInfo, layerMask);
     }
 
-    bool CanSeePlayer() {
+    public bool CanSeePlayer() {
         if (Vector3.Dot(transform.forward, (player.transform.position - transform.position).normalized) < 0.707f) {
             return false;
         }
         return HasLineOfSight();
     }
 
-    bool PlayerCanSeeMe() {
+    public bool PlayerCanSeeMe() {
         if (Vector3.Dot(player.playerCamera.transform.forward, (transform.position - player.transform.position).normalized) < 0.3f) {
             return false;
         }
