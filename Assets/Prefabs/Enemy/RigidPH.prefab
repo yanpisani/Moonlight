@@ -141,7 +141,7 @@ GameObject:
   - component: {fileID: 3078085310877906548}
   m_Layer: 0
   m_Name: LeftArm
-  m_TagString: Untagged
+  m_TagString: InvincibleHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -233,7 +233,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6961855588636072609}
   - component: {fileID: -4439192350854159173}
-  - component: {fileID: -4455922275347151802}
+  - component: {fileID: 347034246233391808}
   m_Layer: 0
   m_Name: RigidPH
   m_TagString: Untagged
@@ -283,7 +283,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &-4455922275347151802
+--- !u!114 &347034246233391808
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -292,18 +292,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 5466218478994738104}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dce3896d8d0b4ff4bb9009d4fba7aaf1, type: 3}
+  m_Script: {fileID: 11500000, guid: 4a83ea179a1b9bf4eb49cc2f72c20da2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   agent: {fileID: -4439192350854159173}
   head: {fileID: 8853589615190566545}
-  state: 0
-  audioSource: {fileID: 4628624674408692825}
-  chargeSound: {fileID: 8300000, guid: 59c29948750b2bb458ff4de114b54143, type: 3}
-  shotSound: {fileID: 8300000, guid: 216f31ceb51d110419c41010026bd074, type: 3}
-  footstepSound: {fileID: 5200143071062936888}
-  lookAtVector: {x: 0, y: 0, z: 0}
+  state: 1
   stop: 0
+  lookAtVector: {x: 0, y: 0, z: 0}
 --- !u!1 &7581739683294034507
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,7 +314,7 @@ GameObject:
   - component: {fileID: 9217017840247813852}
   m_Layer: 0
   m_Name: RightArm
-  m_TagString: Untagged
+  m_TagString: InvincibleHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -414,7 +410,7 @@ GameObject:
   - component: {fileID: 783925497347637056}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: HeadHitbox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -426,13 +422,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8432300431083255294}
-  m_LocalRotation: {x: -0, y: -0, z: -0.46086812, w: 0.88746864}
+  m_LocalRotation: {x: 0.00000003271269, y: 0.000000019557765, z: -0.5655219, w: 0.82473326}
   m_LocalPosition: {x: 0.26999998, y: -0.35000002, z: 0.0063348557}
   m_LocalScale: {x: 0.6785328, y: 0.7892257, z: 0.98576}
   m_Children: []
   m_Father: {fileID: 6731725304453883033}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -54.886}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -68.877}
 --- !u!33 &6165158907717381334
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -510,7 +506,7 @@ GameObject:
   - component: {fileID: 7969026072242174871}
   m_Layer: 0
   m_Name: Torso
-  m_TagString: BodyHitbox
+  m_TagString: InvincibleHitbox
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -606,7 +602,7 @@ GameObject:
   - component: {fileID: 7173103195534648681}
   m_Layer: 0
   m_Name: Head
-  m_TagString: HeadHitbox
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
