@@ -20,7 +20,7 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
     float timeOfLastAttack;
     const float attackCooldown = 1f;
     const int damage = 1;
-
+    public float teleportChance = 1f; // chance for rigid to walk to player
     // Start is called before the first frame update
     void Start() {
        player = FindObjectOfType<Player>();
@@ -39,10 +39,15 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
             Vector3 lookTarget = player.transform.position;
             lookTarget.y = transform.position.y;
             transform.LookAt(lookTarget);
+            teleportChance = Random.Range(1f, 10f);
+
+            
             if (!NavMesh.Raycast(transform.position, player.transform.position, out navHit, NavMesh.AllAreas)) { //straight path to player
-                if (Vector3.SqrMagnitude(player.GetFootPosition() - transform.position) > 1f) {
-                    //walk forward
-                    agent.velocity = transform.forward * speed;
+                if(1f < teleportChance && teleportChance < 7f){
+                    if (Vector3.SqrMagnitude(player.GetFootPosition() - transform.position) > 1f) {
+                        //walk forward
+                        agent.velocity = transform.forward * speed;
+                    }
                 }
                 else if (Time.time > timeOfLastAttack + attackCooldown) {
                     //attack
@@ -50,6 +55,7 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
                     player.Hit(damage);
                 }
             }
+            
             else {
                 //wait to teleport
                 teleportTimer -= Time.deltaTime;
