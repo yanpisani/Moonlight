@@ -20,8 +20,10 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
     float timeOfLastAttack;
     const float attackCooldown = 1f;
     const int damage = 1;
-    public float teleportChance = 1f; // chance for rigid to walk to player
-    // Start is called before the first frame update
+    public float walkChance = 0.7f; //chance for rigid to walk to player
+    float walkRoll;
+    bool canWalk; //only true if we have a straight path to the player and he is looking away from us
+
     void Start() {
        player = FindObjectOfType<Player>();
        layerMask = 768;
@@ -39,12 +41,14 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
             Vector3 lookTarget = player.transform.position;
             lookTarget.y = transform.position.y;
             transform.LookAt(lookTarget);
-            teleportChance = Random.Range(1f, 10f);
-
             
             if (!NavMesh.Raycast(transform.position, player.transform.position, out navHit, NavMesh.AllAreas)) { //straight path to player
-                if(1f < teleportChance && teleportChance < 7f){
-                    if (Vector3.SqrMagnitude(player.GetFootPosition() - transform.position) > 1f) {
+                if (Vector3.SqrMagnitude(player.GetFootPosition() - transform.position) > 1f) {
+                    if (!canWalk) {
+                        canWalk = true;
+                        walkRoll = Random.value;
+                    }
+                    if (walkRoll < walkChance) {
                         //walk forward
                         agent.velocity = transform.forward * speed;
                     }
@@ -55,14 +59,17 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
                     player.Hit(damage);
                 }
             }
-            
             else {
                 //wait to teleport
+                canWalk = false;
                 teleportTimer -= Time.deltaTime;
                 if (teleportTimer < 0f) {
                     Teleport();
                 }
             }
+        }
+        else { //can see me
+            canWalk = false;
         }
     }
 
