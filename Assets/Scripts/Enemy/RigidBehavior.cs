@@ -13,10 +13,13 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
     int layerMask;
     int health = 50;
     public bool stop;
-    float speed = 1f; //meters per second that we move towards the player
+    const float speed = 1f; //meters per second that we move towards the player
     float teleportTimer; //countdown to teleportation
     const float teleportMinTime = 10f;
     const float teleportMaxTime = 30f;
+    float timeOfLastAttack;
+    const float attackCooldown = 1f;
+    const int damage = 1;
 
     // Start is called before the first frame update
     void Start() {
@@ -37,8 +40,15 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
             lookTarget.y = transform.position.y;
             transform.LookAt(lookTarget);
             if (!NavMesh.Raycast(transform.position, player.transform.position, out navHit, NavMesh.AllAreas)) { //straight path to player
-                //walk forward
-                agent.velocity = transform.forward * speed;
+                if (Vector3.SqrMagnitude(player.GetFootPosition() - transform.position) > 1f) {
+                    //walk forward
+                    agent.velocity = transform.forward * speed;
+                }
+                else if (Time.time > timeOfLastAttack + attackCooldown) {
+                    //attack
+                    timeOfLastAttack = Time.time;
+                    player.Hit(damage);
+                }
             }
             else {
                 //wait to teleport
@@ -82,7 +92,7 @@ public class RigidBehavior : MonoBehaviour, IDamagable {
         //if point is close to navmesh snap to it
         if (NavMesh.SamplePosition(randomPoint, out NavMeshHit hit, 1f, NavMesh.AllAreas)) {
             //return if too close (< 5 meters) or if chosen spot can be seen by the player
-            if (Vector3.SqrMagnitude(player.transform.position - hit.position) < 25f || PlayerCanSeeAnyOffsetPoint(hit.position)) {
+            if (Vector3.SqrMagnitude(player.GetFootPosition() - hit.position) < 25f || PlayerCanSeeAnyOffsetPoint(hit.position)) {
                 return;
             }
             NavMeshPath path = new NavMeshPath();
