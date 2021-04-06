@@ -43,11 +43,14 @@ public class Player : MonoBehaviour {
     float moveSpeed = 4f; //max movement speed
     public float accelSpeed = 20f; //speed gained per second
     public float friction = 0.1f; //0,1 means 10% speed loss per second
-    //see https://docs.unity3d.com/ScriptReference/PlayerPrefs.html
+    float stanceVelocity;
+    const float stanceAccel = 10f;
     public float mouseSensitivity = 2.5f;
     public float verticalSensMultiplier = 1f;
     public bool lockCursor = true;
     public Transform aimPivot;
+    public Vector3 standingPosition;
+    public Vector3 crouchingPosition;
     public Camera playerCamera;
     CharacterController cc;
     Vector3 velocity;
@@ -112,6 +115,7 @@ public class Player : MonoBehaviour {
         if (Application.targetFrameRate > 0 && Application.targetFrameRate < 10)
             Application.targetFrameRate = 10;
         //InputSystem.pollingFrequency = 300;
+        standingPosition = aimPivot.localPosition;
 
         //weapon shotgun
         weapon[0].shotDelay = 0.2f;
@@ -197,6 +201,10 @@ public class Player : MonoBehaviour {
     public void OnWalk(InputAction.CallbackContext context) {
         walking = context.ReadValueAsButton();
     }
+    bool crouch;
+    public void OnCrouch(InputAction.CallbackContext context) {
+        crouch = context.ReadValueAsButton();
+    }
     public void OnSwitchToSmg(InputAction.CallbackContext context) {
         if (!context.performed) return; //only continue if this is a key down, not key up
         SwitchToSmg();
@@ -276,11 +284,30 @@ public class Player : MonoBehaviour {
 
         //move
         //moveSpeed go towards walking or running speed
+        //walk
         if (!walking) {
             moveSpeed = Mathf.MoveTowards(moveSpeed, runningSpeed, Time.deltaTime * 8f);
         } else {
             moveSpeed = Mathf.MoveTowards(moveSpeed, walkingSpeed, Time.deltaTime * 8f);
         }
+        //crouch
+        if (crouch) {
+            stanceVelocity -= stanceAccel * Time.deltaTime;
+        }
+        else {
+            stanceVelocity += stanceAccel * Time.deltaTime;
+        }
+        aimPivot.localPosition += Vector3.up * stanceVelocity * Time.deltaTime;
+        //Mathf.Clamp(stanceVelocity, -3f, 3f);
+        if (aimPivot.localPosition.y > standingPosition.y) {
+            aimPivot.localPosition = standingPosition;
+            stanceVelocity = 0f;
+        }
+        else if (aimPivot.localPosition.y < crouchingPosition.y) {
+            aimPivot.localPosition = crouchingPosition;
+            stanceVelocity = 0f;
+        }
+        playerCamera.transform.localPosition = aimPivot.localPosition;
         //Vector3 input = Quaternion.Euler(0f, -90f, 0f) * aimPivot.right * Input.GetAxisRaw("Vertical");
         //input += aimPivot.right * Input.GetAxisRaw("Horizontal");
         Vector3 input = Quaternion.Euler(0f, -90f, 0f) * aimPivot.right * moveInput.y;

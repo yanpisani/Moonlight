@@ -473,6 +473,8 @@ MonoBehaviour:
   verticalSensMultiplier: 1
   lockCursor: 1
   aimPivot: {fileID: 4770747915535413221}
+  standingPosition: {x: 0, y: 0, z: 0}
+  crouchingPosition: {x: 0, y: 0, z: 0}
   playerCamera: {fileID: 3124138011284364349}
   shotLine: {fileID: 0}
   shotLineStartPoint: {fileID: 925210814578819882}
@@ -638,6 +640,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 33845d1c-f408-48eb-8fa5-a5d6511318f9
     m_ActionName: Player/Walk[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8860571386540367304}
+        m_TargetAssemblyTypeName: Player, Assembly-CSharp
+        m_MethodName: OnCrouch
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f68dcc90-b22f-4ad6-ad49-d3f071475592
+    m_ActionName: Player/Crouch[/Keyboard/h]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
